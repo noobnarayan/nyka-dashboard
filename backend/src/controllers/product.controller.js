@@ -48,7 +48,7 @@ const addProduct = asyncHandler(async (req, res) => {
   }
 
   return res
-    .status(200)
+    .status(201)
     .json(new ApiResponse(201, { product }, "Product added successfully"));
 });
 
@@ -97,10 +97,10 @@ const updateProduct = asyncHandler(async (req, res) => {
   }
 
   return res
-    .status(200)
+    .status(204)
     .json(
       new ApiResponse(
-        200,
+        204,
         { product: updatedProduct },
         "Product updated successfully"
       )
@@ -121,8 +121,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 
   return res
-    .status(200)
-    .json(new ApiResponse(200, {}, "Product deleted successfully"));
+    .status(202)
+    .json(new ApiResponse(202, {}, "Product deleted successfully"));
 });
 
 export {

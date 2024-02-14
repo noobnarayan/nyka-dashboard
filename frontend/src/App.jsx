@@ -1,8 +1,19 @@
+import { useDispatch } from "react-redux";
+import AllRoutes from "./routes/AllRoutes";
+import { useEffect } from "react";
+import { getCurrentUser } from "./redux/Auth/action";
+
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCurrentUser());
+  }, [dispatch]);
+
   return (
-    <>
-      <h1 className="text-red-600">Hello</h1>
-    </>
+    <div className="font-Poppins">
+      <AllRoutes />
+    </div>
   );
 }
 

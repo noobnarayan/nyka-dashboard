@@ -4,7 +4,45 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.service.js";
 
-const getProducts = asyncHandler(async (req, res) => {});
+const getProducts = asyncHandler(async (req, res) => {
+  const { gender, category, sort, search, page = 1, limit = 10 } = req.query;
+
+  let query = {};
+
+  if (gender) {
+    query.gender = gender.toLowerCase();
+  }
+
+  if (category) {
+    query.category = category.toLowerCase();
+  }
+
+  if (search) {
+    query.name = { $regex: search };
+  }
+
+  let products = await Product.find(query)
+    .skip((page - 1) * limit)
+    .limit(parseInt(limit));
+
+  if (sort) {
+    products = products.sort((a, b) => {
+      if (sort === "Ascending") {
+        return a.price - b.price;
+      } else if (sort === "Descending") {
+        return b.price - a.price;
+      }
+    });
+  }
+
+  if (!products) {
+    throw new ApiError(502, "Something went wrong while getting products");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { products }, "Products fetched successfully"));
+});
 
 const addProduct = asyncHandler(async (req, res) => {
   const { name, description, gender, category, price } = req.body;

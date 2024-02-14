@@ -1,18 +1,27 @@
 import React, { useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 
 function AllRoutes() {
   const navigate = useNavigate();
+  const location = useLocation();
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    if (!accessToken) {
+    if (location.pathname === "/register" && accessToken) {
+      navigate("/dashboard");
+    } else if (!accessToken && location.pathname !== "/register") {
       navigate("/login");
     }
-  }, [accessToken, navigate]);
+  }, [accessToken, navigate, location]);
 
   return (
     <Routes>

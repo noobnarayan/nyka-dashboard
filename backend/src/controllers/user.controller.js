@@ -9,7 +9,9 @@ const cookieOptions = {
   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   maxAge: 1000 * 60 * 60 * 24 * 7,
   domain:
-    process.env.NODE_ENV === "production" ? "your-production-url" : "localhost",
+    process.env.NODE_ENV === "production"
+      ? "https://nyka-frontend-flax.vercel.app/"
+      : "localhost",
 };
 
 const ping = asyncHandler((req, res) => {

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { authService } from "../services/authService";
 function Signup() {
   const [formState, setFormState] = useState({
     avatar: "",
@@ -10,11 +11,41 @@ function Signup() {
     password: "",
   });
 
+  const [processing, setProcessing] = useState(null);
+  const navigate = useNavigate();
+
   const handleInputChange = (e) => {
     setFormState({
       ...formState,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleFileUpload = (e) => {
+    const imageFile = e.target.files[0];
+    setFormState({
+      ...formState,
+      avatar: imageFile,
+    });
+  };
+
+  const signup = async (data) => {
+    setProcessing(true);
+    try {
+      const res = await authService.signup(data);
+      if (res.statusCode === 201) {
+        navigate("/login");
+      }
+      setProcessing(false);
+    } catch (error) {
+      console.log(error);
+      setProcessing(false);
+    }
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    signup(formState);
   };
 
   return (
@@ -25,7 +56,7 @@ function Signup() {
             Create your account
           </h2>
         </div>
-        <form className="mt-8 space-y-6" action="#" method="POST">
+        <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <InputField
               id="name"
@@ -38,7 +69,7 @@ function Signup() {
               label="Full Name"
             />
             <InputField
-              id="email-address"
+              id="email"
               name="email"
               type="email"
               value={formState.email}
@@ -61,7 +92,7 @@ function Signup() {
               id="avatar"
               name="avatar"
               type="file"
-              onChange={handleInputChange}
+              onChange={handleFileUpload}
               isRequired={true}
               label="Avatar"
             />
@@ -69,10 +100,10 @@ function Signup() {
 
           <div>
             <Button
-              buttonText="Sign up"
+              buttonText={processing ? "Creating Account..." : "Sign Up"}
               color="bg-black"
               textColor="text-white"
-              additionalClasses="hover:bg-gray-500 "
+              additionalClasses="hover:bg-gray-500"
             />
           </div>
         </form>

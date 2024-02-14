@@ -7,7 +7,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? "your-production-url"
+        ? "https://nyka-frontend-flax.vercel.app"
         : "http://localhost:5173",
     credentials: true,
   })

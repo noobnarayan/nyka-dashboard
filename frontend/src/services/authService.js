@@ -4,19 +4,18 @@ import { api_url } from "../config.js";
 async function login(data) {
   try {
     const response = await axios.post(`${api_url}/api/login`, data);
+    localStorage.setItem("accessToken", response.data.data.accessToken);
     return response.data;
   } catch (error) {
     console.error(error);
   }
 }
 
-async function signup(formState) {
+const signup = async (data) => {
   try {
     const formData = new FormData();
-    Object.keys(formState).forEach((key) =>
-      formData.append(key, formState[key])
-    );
-    const response = await axios.post(`${api_url}/api/signup`, formData, {
+    Object.keys(data).forEach((key) => formData.append(key, data[key]));
+    const response = await axios.post(`${api_url}/api/register`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -25,7 +24,7 @@ async function signup(formState) {
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 async function getCurrentUser() {
   try {

@@ -3,6 +3,9 @@ import {
   MagnifyingGlassIcon,
   BellIcon,
   ArrowLongRightIcon,
+  PencilSquareIcon,
+  TrashIcon,
+  EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
 import Select from "./Select";
 import InputField from "./InputField";
@@ -20,7 +23,7 @@ function Dashboardcontent() {
     gender: "",
     category: "",
     price: "",
-    image: null,
+    picture: null,
   };
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -75,10 +78,16 @@ function Dashboardcontent() {
     }));
   };
 
+  const addProduct = async (data) => {
+    try {
+      const res = await productService.addProduct(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleAddProduct = () => {
-    // Handle adding product logic here
-    console.log("Adding product:", newProduct);
-    // Reset the new product state
+    addProduct(newProduct);
     setNewProduct({
       image: "",
       name: "",
@@ -87,21 +96,33 @@ function Dashboardcontent() {
       category: "",
       price: "",
     });
-    // Close the modal
     setIsModalOpen(false);
   };
 
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  const handleProductDelete = async (id) => {
+    try {
+      const res = await productService.deleteProduct(id);
+      if (res.statusCode === 202) {
+        fetchProducts();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="p-7">
       <div>
         <div className="flex justify-between">
-          {/* Search bar and profile section */}
           <div className="border px-2.5 py-px flex gap-3 w-1/2 bg-white items-center rounded-sm">
             <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
             <input
               type="text"
               className="w-full focus:outline-none"
               placeholder="Search"
+              onChange={handleSearchInputChange}
             />
           </div>
           <div className="flex gap-3 items-center">
@@ -193,8 +214,13 @@ function Dashboardcontent() {
                     ${product.price.toFixed(2)}
                   </td>
                   <td className="text-left py-5">{product.description}</td>
-                  <td className="text-center py-5">
-                    <button>Edit</button>
+                  <td className="text-right py-5 flex gap-2 items-center justify-center">
+                    <PencilSquareIcon className="h-5 w-5 hover:cursor-pointer" />
+                    <TrashIcon
+                      className="h-5 w-5 hover:cursor-pointer"
+                      onClick={() => handleProductDelete(product._id)}
+                    />
+                    <EllipsisHorizontalIcon className="h-5 w-5 hover:cursor-pointer" />
                   </td>
                 </tr>
               ))}
@@ -208,7 +234,7 @@ function Dashboardcontent() {
             <h2 className="text-lg font-medium mb-4">Add Product</h2>
             <InputField
               label="Product Name"
-              id="productName"
+              id="name"
               name="name"
               value={newProduct.name}
               onChange={handleInputChange}
@@ -218,7 +244,7 @@ function Dashboardcontent() {
 
             <InputField
               label="Product Description"
-              id="productDescription"
+              id="description"
               name="description"
               value={newProduct.description}
               onChange={handleInputChange}
@@ -226,7 +252,7 @@ function Dashboardcontent() {
               className="mb-4"
             />
             <Select
-              id="productGender"
+              id="gender"
               name="gender"
               label="Gender"
               defaultOption="Select gender"
@@ -237,7 +263,7 @@ function Dashboardcontent() {
               isRequired={true}
             />
             <Select
-              id="productCategory"
+              id="category"
               name="category"
               label="Category"
               defaultOption="Select category"
@@ -249,7 +275,7 @@ function Dashboardcontent() {
             />
             <InputField
               label="Price"
-              id="productPrice"
+              id="price"
               name="price"
               type="number"
               value={newProduct.price}
@@ -264,8 +290,8 @@ function Dashboardcontent() {
             </label>
             <input
               type="file"
-              id="productImage"
-              name="image"
+              id="picture"
+              name="picture"
               accept="image/*"
               onChange={handleImageUpload}
               className="mb-4"

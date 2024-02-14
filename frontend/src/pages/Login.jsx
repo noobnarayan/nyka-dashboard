@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/Auth/action";
 
@@ -11,9 +11,12 @@ function Login() {
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const { isAuthenticated } = useSelector((store) => store.auth);
-  console.log(isAuthenticated);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  const accessToken = localStorage.getItem("accessToken");
+  if (accessToken != undefined) {
+    navigate("/dashboard");
+  }
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const data = { email, password };

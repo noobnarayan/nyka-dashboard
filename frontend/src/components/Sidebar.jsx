@@ -20,8 +20,11 @@ const sidebarLinks = [
   },
   {
     name: "Logout",
-    href: "/logout",
     icon: Cog6ToothIcon,
+    action: () => {
+      localStorage.removeItem("accessToken");
+      window.location.reload();
+    },
   },
 ];
 
@@ -38,36 +41,55 @@ function Sidebar() {
       <div className="ie-menu mt-8 h-full">
         <div className="flex flex-col items-center gap-3 p-1 xl:items-stretch xl:px-3">
           {sidebarLinks.map((item) => {
-            return (
-              <NavLink to={item.href} key={item.name} className="group">
-                {({ isActive }) => {
-                  return (
+            if (item.name === "Logout") {
+              return (
+                <div onClick={item.action} key={item.name} className="group">
+                  <span
+                    className={`flex items-center gap-3 rounded-md px-3 py-2 transition-all group-hover:bg-gray-50`}
+                  >
+                    <item.icon
+                      className={`h-5 stroke-2 stroke-gray-500 group-hover:stroke-blue-700 group-hover:text-blue-700`}
+                    />
                     <span
-                      className={`flex items-center gap-3 rounded-md px-3 py-2 transition-all ${
-                        isActive ? "bg-gray-100" : "group-hover:bg-gray-50"
-                      }`}
+                      className={`hidden text-base font-semibold xl:block text-gray-500 group-hover:text-blue-700`}
                     >
-                      <item.icon
-                        className={`h-5 stroke-2 ${
-                          isActive
-                            ? "stroke-blue-700 text-blue-700"
-                            : "stroke-gray-500 group-hover:stroke-blue-700 group-hover:text-blue-700"
-                        }`}
-                      />
+                      {item.name}
+                    </span>
+                  </span>
+                </div>
+              );
+            } else {
+              return (
+                <NavLink to={item.href} key={item.name} className="group">
+                  {({ isActive }) => {
+                    return (
                       <span
-                        className={`hidden text-base font-semibold xl:block ${
-                          isActive
-                            ? "text-blue-700"
-                            : "text-gray-500 group-hover:text-blue-700"
+                        className={`flex items-center gap-3 rounded-md px-3 py-2 transition-all ${
+                          isActive ? "bg-gray-100" : "group-hover:bg-gray-50"
                         }`}
                       >
-                        {item.name}
+                        <item.icon
+                          className={`h-5 stroke-2 ${
+                            isActive
+                              ? "stroke-blue-700 text-blue-700"
+                              : "stroke-gray-500 group-hover:stroke-blue-700 group-hover:text-blue-700"
+                          }`}
+                        />
+                        <span
+                          className={`hidden text-base font-semibold xl:block ${
+                            isActive
+                              ? "text-blue-700"
+                              : "text-gray-500 group-hover:text-blue-700"
+                          }`}
+                        >
+                          {item.name}
+                        </span>
                       </span>
-                    </span>
-                  );
-                }}
-              </NavLink>
-            );
+                    );
+                  }}
+                </NavLink>
+              );
+            }
           })}
         </div>
       </div>
